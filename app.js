@@ -80,15 +80,15 @@ const cm_short = {
         });
     },
     analytics: function(link_id){
-        var options = {
-            method: 'GET',
-            url: 'https://api.short.cm/links/' + link_id + '/statistics',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': api_key
-            }
-        };
         return new Promise(function(resolve,reject){
+            var options = {
+                method: 'GET',
+                url: 'https://api.short.cm/links/' + link_id + '/statistics',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': api_key
+                }
+            };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var info = JSON.parse(body);
@@ -102,22 +102,14 @@ const cm_short = {
     analyticsByUrl: function(url){
         return new Promise(function(resolve,reject){
             cm_short.expand(url).then(function(res){
-                var options = {
-                    method: 'GET',
-                    url: 'https://api.short.cm/links/' + res.id + '/statistics',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': api_key
-                    }
-                };
-                request(options, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        var info = JSON.parse(body);
-                        resolve(info);
-                    }else{
-                        reject("error in domain api request");
-                    }
+                cm_short.analytics(res.id).then(function(res){
+                    resolve(res);
+                }).catch(function(err){
+                    reject(err);
                 });
+            }).catch(function(){
+                console.log('not a success');
+                reject('url is not valid, or expand didn\'nt worked');
             });
         });
     }
