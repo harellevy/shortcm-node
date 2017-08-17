@@ -19,7 +19,6 @@ const cm_short = {
                 'Authorization': apiKey
             }
         };
-
         return new Promise(function(resolve,reject){
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
@@ -31,7 +30,7 @@ const cm_short = {
             })
         });
     },
-    short: function(url, title){
+    shorten: function(url, title){
         var options = {
             method: 'POST',
             url: 'https://api.short.cm/links',
@@ -79,7 +78,7 @@ const cm_short = {
             })
         });
     },
-    analytics: function(link_id){
+    analyticsById: function(link_id){
         return new Promise(function(resolve,reject){
             var options = {
                 method: 'GET',
@@ -99,10 +98,10 @@ const cm_short = {
             })
         });
     },
-    analyticsByUrl: function(url){
+    analytics: function(url){
         return new Promise(function(resolve,reject){
             cm_short.expand(url).then(function(res){
-                cm_short.analytics(res.id).then(function(res){
+                cm_short.analyticsById(res.id).then(function(res){
                     resolve(res);
                 }).catch(function(err){
                     reject(err);
