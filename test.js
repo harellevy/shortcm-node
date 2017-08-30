@@ -8,9 +8,9 @@ var short_cm = require("./app");
 
 
 // get all short domains by api key
-short_cm.domainApi("API_KEY").then(function(res){
-    console.log(res);
-});
+// short_cm.domainApi("API_KEY").then(function(res){
+//     console.log(res);
+// });
 
 // init auth with short.cm (update api key and short domain)
 short_cm.auth("API_KEY", "SHORT_URL_DOMAIN");
@@ -37,4 +37,12 @@ short_cm.analyticsByUrl('SHORT_URL').then(function(res){
     console.log(res);
 }).catch(function(){
     console.log('catch');
+});
+
+
+short_cm.deleteByUrl("SHORT_URL").then(function(res){
+    console.log('result:');
+    console.log(res);
+}).catch(function(err){
+    console.err(err);
 });
