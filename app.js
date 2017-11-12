@@ -37,7 +37,7 @@ const cm_short = {
             form: {
                 domain: short_domain,
                 originalURL: url,
-                title: title || "title_placeholder"
+                // title: title || "title_placeholder"
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -123,7 +123,8 @@ const cm_short = {
         return new Promise(function(resolve,reject){
             var options = {
                 method: 'GET',
-                url: 'https://api.short.cm/links/' + link_id + '/statistics',
+                url: 'https://api.short.cm/links/statistics/' + link_id + '?period=total',
+                // url: 'https://api.short.cm/links/' + link_id + '/statistics',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': api_key
