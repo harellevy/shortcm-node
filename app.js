@@ -30,13 +30,13 @@ const cm_short = {
             })
         });
     },
-    shorten: function(url, title){
+    shorten: function(url){
         var options = {
             method: 'POST',
             url: 'https://api.short.cm/links',
             form: {
                 domain: short_domain,
-                originalURL: url,
+                originalURL: url
                 // title: title || "title_placeholder"
             },
             headers: {
@@ -137,6 +137,80 @@ const cm_short = {
                 }else{
                     reject("error in domain api request");
                 }
+            })
+        });
+    },
+    updateShortUrlByLinkId: function(link_id, newLongUrl){
+        return new Promise(function(resolve,reject){
+            var options = {
+                method: 'POST',
+                url: 'https://api.short.cm/links/' + link_id,
+                form: {
+                    originalURL: newLongUrl,
+                    // title: title || "title_placeholder"
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': api_key
+                }
+            };
+            request(options, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var info = JSON.parse(body);
+                    resolve(info);
+                }else{
+                    reject("error in domain api request");
+                }
+            })
+        });
+    },
+    updateLocaleById: function(link_id, country, url){
+        return new Promise(function(resolve,reject){
+            var options = {
+                method: 'POST',
+                url: 'https://api.short.cm/link_country/' + link_id,
+                form: {
+                    originalURL: url,
+                    country: country
+                    // title: title || "title_placeholder"
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': api_key
+                }
+            };
+            request(options, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var info = JSON.parse(body);
+                    resolve(info);
+                }else{
+                    reject("error in update locale by id");
+                }
+            })
+        });
+    },
+    updateShortUrl: function(shortUrl, newLongUrl){
+        return new Promise(function(resolve,reject){
+            cm_short.expand(shortUrl).then(function(expand_res){
+                cm_short.updateShortUrlByLinkId(expand_res.id, newLongUrl).then(function(res){
+                    resolve(res);
+                }).catch(function(err){
+                    reject(err);
+                });
+            }).catch(function(){
+                console.log('not a success');
+                reject('url is not valid, or expand didn\'nt worked');
+            });
+        });
+    },
+    updateLocalForLink: function(short_url, country, url){
+        return new Promise(function(resolve,reject){
+            cm_short.expand(short_url).then(function(expand_res){
+                cm_short.updateLocaleById(expand_res.id, country, url).then(function(res){
+                    resolve(res);
+                }).catch(function(err){
+                    reject(err);
+                });
             })
         });
     },
