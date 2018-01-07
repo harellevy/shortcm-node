@@ -27,7 +27,7 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in domain api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -41,7 +41,6 @@ const cm_short = {
             form: {
                 domain: short_domain,
                 originalURL: url
-                // title: title || "title_placeholder"
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +55,7 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in shorten api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -103,7 +102,7 @@ const cm_short = {
                     console.error(error);
                     reject({
                         msg: "error in shorten delete method api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -128,7 +127,31 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in expand api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
+                        response: response
+                    });
+                }
+            })
+        });
+    },
+    expandByLongUrl: function(url){
+        return new Promise(function(resolve,reject){
+            var options = {
+                method: 'GET',
+                url: 'https://api.short.cm/links/by-original-url?domain=' + encodeURI(short_domain) + '&originalURL=' + encodeURIComponent(url),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': api_key
+                }
+            };
+            request(options, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var info = JSON.parse(body);
+                    resolve(info);
+                }else{
+                    reject({
+                        msg: "error in expand api request",
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -153,7 +176,7 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in analytics shorten api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -181,7 +204,7 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in update shorten api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
@@ -210,7 +233,7 @@ const cm_short = {
                 }else{
                     reject({
                         msg: "error in updateLocale api request",
-                        error: error,
+                        error: error || JSON.parse(response.body),
                         response: response
                     });
                 }
