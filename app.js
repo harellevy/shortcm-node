@@ -25,7 +25,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in domain api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -50,7 +54,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in shorten api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -93,7 +101,11 @@ const cm_short = {
                     console.log('Headers:', JSON.stringify(response.headers));
                     console.log('Response:', body);
                     console.error(error);
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in shorten delete method api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -114,7 +126,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in expand api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -135,7 +151,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in analytics shorten api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -159,7 +179,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in domain api request");
+                    reject({
+                        msg: "error in update shorten api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -184,7 +208,11 @@ const cm_short = {
                     var info = JSON.parse(body);
                     resolve(info);
                 }else{
-                    reject("error in update locale by id");
+                    reject({
+                        msg: "error in updateLocale api request",
+                        error: error,
+                        response: response
+                    });
                 }
             })
         });
@@ -197,9 +225,9 @@ const cm_short = {
                 }).catch(function(err){
                     reject(err);
                 });
-            }).catch(function(){
+            }).catch(function(err){
                 console.log('not a success');
-                reject('url is not valid, or expand didn\'nt worked');
+                reject(err);
             });
         });
     },
@@ -222,9 +250,9 @@ const cm_short = {
                 }).catch(function(err){
                     reject(err);
                 });
-            }).catch(function(){
+            }).catch(function(err){
                 console.log('not a success');
-                reject('url is not valid, or expand didn\'nt worked');
+                reject(err);
             });
         });
     }
