@@ -6,11 +6,11 @@ const request = require("request");
 var api_key, short_domain;
 
 const cm_short = {
-    auth: function(apiKey, shortDomain){
+    auth: function (apiKey, shortDomain) {
         api_key = apiKey;
         short_domain = shortDomain || "smart.short.cm";
     },
-    domainApi: function(apiKey){
+    domainApi: function (apiKey) {
         var options = {
             method: 'GET',
             url: 'https://api.short.cm/api/domains',
@@ -19,22 +19,22 @@ const cm_short = {
                 'Authorization': apiKey
             }
         };
-        return new Promise(function(resolve,reject){
+        return new Promise(function (resolve, reject) {
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     reject({
                         msg: "error in domain api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    shorten: function(url){
+    shorten: function (url) {
         var options = {
             method: 'POST',
             url: 'https://api.short.cm/links',
@@ -47,42 +47,42 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return new Promise(function(resolve,reject){
+        return new Promise(function (resolve, reject) {
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     reject({
                         msg: "error in shorten api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    getPathFromUrl: function(url){
+    getPathFromUrl: function (url) {
         return url.replace(short_domain, '').replace(/(http:\/\/|https:\/\/|\/)/g, '')
     },
-    deleteByUrl: function(url){
-        return new Promise(function(resolve,reject){
-            cm_short.expand(url).then(function(link){
-                cm_short.delete(link.id).then(function(){
+    deleteByUrl: function (url) {
+        return new Promise(function (resolve, reject) {
+            cm_short.expand(url).then(function (link) {
+                cm_short.delete(link.id).then(function () {
                     resolve(url + 'deleted');
-                }).catch(function(err){
+                }).catch(function (err) {
                     console.log('delete error');
                     reject(err);
                 });
 
-            }).catch(function(err){
+            }).catch(function (err) {
                 console.log('expand error');
                 reject(err);
             });
         });
     },
-    delete: function(link_id){
-        return new Promise(function(resolve,reject){
+    delete: function (link_id) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'DELETE',
                 url: 'https://api.short.cm/links/' + link_id,
@@ -93,16 +93,16 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     console.log('Status:', response.statusCode);
                     console.log('Headers:', JSON.stringify(response.headers));
                     console.log('Response:', body);
                     console.error(error);
                     reject({
                         msg: "error in shorten delete method api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
@@ -110,8 +110,8 @@ const cm_short = {
         });
     },
 
-    expand: function(url){
-        return new Promise(function(resolve,reject){
+    expand: function (url) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'GET',
                 url: 'https://api.short.cm/links/expand?domain=' + encodeURI(short_domain) + '&path=' + encodeURI(cm_short.getPathFromUrl(url)),
@@ -122,20 +122,20 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     reject({
                         msg: "error in expand api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    expandByLongUrl: function(url){
-        return new Promise(function(resolve,reject){
+    expandByLongUrl: function (url) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'GET',
                 url: 'https://api.short.cm/links/by-original-url?domain=' + encodeURI(short_domain) + '&originalURL=' + encodeURIComponent(url),
@@ -146,20 +146,20 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     reject({
                         msg: "error in expand api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    analyticsById: function(link_id){
-        return new Promise(function(resolve,reject){
+    analyticsById: function (link_id) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'GET',
                 url: 'https://api.short.cm/links/statistics/' + link_id + '?period=total',
@@ -171,20 +171,20 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error? reject(info) : resolve(info);;
+                } else {
                     reject({
                         msg: "error in analytics shorten api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    updateShortUrlByLinkId: function(link_id, newLongUrl){
-        return new Promise(function(resolve,reject){
+    updateShortUrlByLinkId: function (link_id, newLongUrl) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'POST',
                 url: 'https://api.short.cm/links/' + link_id,
@@ -199,20 +199,20 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error ? reject(info) : resolve(info);
+                } else {
                     reject({
                         msg: "error in update shorten api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    updateLocaleById: function(link_id, country, url){
-        return new Promise(function(resolve,reject){
+    updateLocaleById: function (link_id, country, url) {
+        return new Promise(function (resolve, reject) {
             var options = {
                 method: 'POST',
                 url: 'https://api.short.cm/link_country/' + link_id,
@@ -228,58 +228,72 @@ const cm_short = {
             };
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var info = JSON.parse(body);
-                    resolve(info);
-                }else{
+                    var info = checkIfJsonStringAndParse(body);
+                    info.error ? reject(info) : resolve(info);
+                } else {
                     reject({
                         msg: "error in updateLocale api request",
-                        error: error || JSON.parse(response.body),
+                        error: error,
                         response: response
                     });
                 }
             })
         });
     },
-    updateShortUrl: function(shortUrl, newLongUrl){
-        return new Promise(function(resolve,reject){
-            cm_short.expand(shortUrl).then(function(expand_res){
-                cm_short.updateShortUrlByLinkId(expand_res.id, newLongUrl).then(function(res){
+    updateShortUrl: function (shortUrl, newLongUrl) {
+        return new Promise(function (resolve, reject) {
+            cm_short.expand(shortUrl).then(function (expand_res) {
+                cm_short.updateShortUrlByLinkId(expand_res.id, newLongUrl).then(function (res) {
                     resolve(res);
-                }).catch(function(err){
+                }).catch(function (err) {
                     reject(err);
                 });
-            }).catch(function(err){
+            }).catch(function (err) {
                 console.log('not a success');
                 reject(err);
             });
         });
     },
-    updateLocalForLink: function(short_url, country, url){
-        return new Promise(function(resolve,reject){
-            cm_short.expand(short_url).then(function(expand_res){
-                cm_short.updateLocaleById(expand_res.id, country, url).then(function(res){
+    updateLocalForLink: function (short_url, country, url) {
+        return new Promise(function (resolve, reject) {
+            cm_short.expand(short_url).then(function (expand_res) {
+                cm_short.updateLocaleById(expand_res.id, country, url).then(function (res) {
                     resolve(res);
-                }).catch(function(err){
+                }).catch(function (err) {
                     reject(err);
                 });
             })
         });
     },
-    analytics: function(url){
-        return new Promise(function(resolve,reject){
-            cm_short.expand(url).then(function(res){
-                cm_short.analyticsById(res.id).then(function(res){
+    analytics: function (url) {
+        return new Promise(function (resolve, reject) {
+            cm_short.expand(url).then(function (res) {
+                cm_short.analyticsById(res.id).then(function (res) {
                     resolve(res);
-                }).catch(function(err){
+                }).catch(function (err) {
                     reject(err);
                 });
-            }).catch(function(err){
+            }).catch(function (err) {
                 console.log('not a success');
                 reject(err);
             });
         });
     }
 };
+
+//helper to test if json can be parsed
+
+function checkIfJsonStringAndParse(str) {
+    try {
+        var x = JSON.parse(str);
+    } catch (e) {
+        return {
+            msg: "error in updateLocale api request",
+            error: "couldn't parse :::\n" + str,
+        };
+    }
+    return x;
+}
 module.exports = cm_short;
 
 
