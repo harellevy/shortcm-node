@@ -15,6 +15,7 @@
   "author": "Harel Levy",
   "license": "ISC",
   "dependencies": {
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "request-rate-limiter": "^1.0.2"
   }
 }
