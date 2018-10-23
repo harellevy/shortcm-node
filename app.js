@@ -17,7 +17,7 @@ const cm_short = {
                 'Authorization': apiKey
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
     shorten: function (url) {
         const options = {
@@ -32,7 +32,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
     getPathFromUrl: function (url) {
         return url.replace(short_domain, '').replace(/(http:\/\/|https:\/\/|\/)/g, '')
@@ -92,7 +92,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
 
     expandByLongUrl: function (url) {
@@ -104,7 +104,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
     analyticsById: function (link_id) {
         const options = {
@@ -116,7 +116,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
     updateShortUrlByLinkId: function (link_id, newLongUrl) {
         const options = {
@@ -131,7 +131,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
 
     updateLocaleById: function (link_id, country, url) {
@@ -148,7 +148,7 @@ const cm_short = {
                 'Authorization': api_key
             }
         };
-        return makeLimitedRequest(options);
+        return makeRateLimitedRequest(options);
     },
 
     updateShortUrl: function (shortUrl, newLongUrl) {
@@ -207,7 +207,7 @@ function checkIfJsonStringAndParse(str) {
     return x;
 }
 
-function makeLimitedRequest(options) {
+function makeRateLimitedRequest(options) {
     return new Promise(function (resolve, reject) {
         limiter.request()
             .then(function (backoff) {
@@ -231,13 +231,7 @@ function makeLimitedRequest(options) {
     });
 }
 
-const SHORTCM_API_KEY = "NSVRGcIHcVrasPSd";
-cm_short.auth(SHORTCM_API_KEY, "sllc.co");
-cm_short.expand('https://sllc.co/wsgRaN')
-    .then(x => console.log(x))
-
-//
-// module.exports = cm_short;
+module.exports = cm_short;
 
 
 
