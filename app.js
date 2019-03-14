@@ -2,6 +2,7 @@
  * Created by harel on 15/08/2017.
  */
 const request = require("request");
+const URL = require('url');
 
 let apiKey, shortDomain;
 
