@@ -109,8 +109,8 @@ const shortCm = {
 
     expand: (url) => {
         return new Promise((resolve, reject) => {
-            let pathname = URL.parse(url).pathname;
-            pathname = encodeURI(stripLeadingSlash(stripTrailingSlash(pathname)));
+            const myURL = new URL(url);
+            const pathname = encodeURI(stripLeadingSlash(stripTrailingSlash(myURL.pathname)));
             const short = encodeURI(shortDomain);
 
             const options = {
